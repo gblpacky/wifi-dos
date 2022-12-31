@@ -1,22 +1,16 @@
 # Wifi Network- Denial of Service Python3 Tool
 Python Denial of Service Tool - Wifi Network Deauther
 
-# Required*
+# Required
 
 Wireless Adapter that supports:
-Monitor Mode
-Packet Injection
+Monitor Mode & Packet Injection
 
 Optional support:
-Soft AP
+Soft-AP mode
 
-Wifi tools:
-Airmon-ng
-Aireplay-ng 
-Mdk3
-Python3
+Tools:
+Python3, Airmon-ng, Aireplay-ng, Mdk3
 
 Operational System:
-Kali Linux
-Ubuntu
-Debian
+Kali Linux, Ubuntu, Debian
